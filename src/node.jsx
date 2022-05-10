@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
+import './node.css'
 
 export default class Node extends Component {
-    // constructor(props) {
-    //     super(props);
-    // }
-
     render() {
         const {
             value,
-            layer,
-            colour
         } = this.props;
 
         return (
             <div
-                id=""
-                className="">
+                className="node">
+                {value}
             </div>
         );
     }

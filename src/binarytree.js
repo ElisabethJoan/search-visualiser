@@ -29,6 +29,7 @@ export default class BalancedBinaryTree {
         return node;
     }
 
+    //TODO convert to a breadth first traversal so the nodes are in order of depth
     toNodeArray() {
         let nodeArray = [];
 
