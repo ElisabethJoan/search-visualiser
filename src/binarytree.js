@@ -29,22 +29,24 @@ export default class BalancedBinaryTree {
         return node;
     }
 
-    //TODO convert to a breadth first traversal so the nodes are in order of depth
     toNodeArray() {
         let nodeArray = [];
 
-        function preOrderTraversal(node) {
-            if (node == null)
-            {
+        function breadthFirstTraversal(node, depth) {
+            if (node === null) {
                 return;
             }
-
-            nodeArray.push(node)
-            preOrderTraversal(node.left);
-            preOrderTraversal(node.right);
+            if (depth === 1) {
+                nodeArray.push(node);
+            } else if (depth > 1) {
+                breadthFirstTraversal(node.left, depth - 1);
+                breadthFirstTraversal(node.right, depth - 1);
+            }
         }
 
-        preOrderTraversal(this.root)
+        for (let i = 1; i <= 4; i++) {
+            breadthFirstTraversal(this.root, i);
+        }
 
         return nodeArray;
     }
