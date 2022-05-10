@@ -23,8 +23,8 @@ export default class BalancedBinaryTree {
 
         node.depth = depth
 
-        node.left = this.arrayToTree(arr, start, mid - 1, depth+1);
-        node.right = this.arrayToTree(arr, mid + 1, end, depth+1);
+        node.left = this.arrayToTree(arr, start, mid - 1, depth + 1);
+        node.right = this.arrayToTree(arr, mid + 1, end, depth + 1);
 
         return node;
     }
