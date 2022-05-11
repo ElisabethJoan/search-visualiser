@@ -14,3 +14,24 @@
     align-self: center;
     justify-self: center;
 }
+
+.active {
+    background: lightskyblue;
+    border: 0px;
+    padding: 10px;
+    color: white;
+}
+
+.goal {
+    background: greenyellow;
+    border: 0px;
+    padding: 10px;
+    color: white;
+}
+
+.path {
+    background: hotpink;
+    border: 0px;
+    padding: 10px;
+    color: white;
+}

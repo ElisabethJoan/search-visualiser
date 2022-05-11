@@ -4,6 +4,8 @@ class Node {
         this.depth = null;
         this.left = null;
         this.right = null;
+        this.isGoal = false;
+        this.isActive = false;
     }
 }
 

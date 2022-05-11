@@ -5,11 +5,19 @@ export default class Node extends Component {
     render() {
         const {
             value,
+            isGoal,
+            isPath,
+            isActive
         } = this.props;
+
+        const type = isPath
+        ? ' path' : isActive
+        ? ' active' : isGoal
+        ? ' goal' : '';
 
         return (
             <div
-                className="node">
+                className={`node${type}`}>
                 {value}
             </div>
         );
