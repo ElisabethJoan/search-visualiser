@@ -5,6 +5,7 @@ class Node {
         this.left = null;
         this.right = null;
         this.isGoal = false;
+        this.isPath = false;
         this.isActive = false;
     }
 }

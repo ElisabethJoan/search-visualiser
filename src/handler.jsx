@@ -4,6 +4,8 @@ import BalancedBinaryTree from './binarytree'
 import Layer from './layer'
 import Node from './node'
 
+const ANIMATION_DELAY = 300;
+
 const timer = ms => new Promise(res => setTimeout(res, ms));
 
 export default class Handler extends React.Component {
@@ -16,10 +18,16 @@ export default class Handler extends React.Component {
         }
     }
 
+
+    componentDidMount() {
+        this.begin()
+    }
+
+
     async flipActive(node) {
         node.isActive = !node.isActive;
         this.forceUpdate()
-        await timer(200);
+        await timer(ANIMATION_DELAY);
         node.isActive = !node.isActive;
         this.forceUpdate()
     }
@@ -38,58 +46,68 @@ export default class Handler extends React.Component {
         console.log(array)
 
         let goalIdx = Math.floor(Math.random() * 15) + 7;
-        goalIdx = 8
+        goalIdx = 2 + 7
         array[goalIdx].isGoal = true;
         this.setState({array: array})
     }
-    
+
+
+    setStateSynchronous(stateUpdate) {
+        return new Promise(resolve => {
+            this.setState(stateUpdate, () => resolve());
+        });
+    }
+
 
     async dfs(node) {
-        // console.log(this.state.path)
+        console.log(node);
         if (node === null) {
             return false;
         } else {
-            // await this.flipActive(node);
+            await this.flipActive(node);
         }
 
         if (node.isGoal === true) {
-            // this.setState({path: [...this.state.path, node]})
+            node.isPath = true;
+            this.forceUpdate()
             return true;
         }
 
-        if (await this.dfs(node.left)) {
-            // console.log('left')
-            // this.setState({path: [...this.state.path, node]})
-            this.setState({path: [...this.state.path, 'left']})
+        if (node.left !== null && await this.dfs(node.left)) {
+            await this.setStateSynchronous(({path: [...this.state.path, 'left']}));
+            node.isPath = true;
+            this.forceUpdate()
+            await timer(ANIMATION_DELAY);
             return true;
         }
 
-        // if (node !== null) {
-        //     await this.flipActive(node);
-        // }
+        if (node !== null) {
+            await this.flipActive(node);
+        }
 
-        if (await this.dfs(node.right)) {
-            // console.log('right')
-            // this.setState({path: [...this.state.path, node]})
-            this.setState({path: [...this.state.path, 'right']})
+        if (node.left !== null && await this.dfs(node.right)) {
+            await this.setStateSynchronous(({path: [...this.state.path, 'right']}));
+            node.isPath = true;
+            this.forceUpdate()
+            await timer(ANIMATION_DELAY);
             return true;
         }
 
-        // if (node !== null) {
-        //     await this.flipActive(node);
-        // }
-
+        if (node !== null) {
+            await this.flipActive(node);
+        }
     }
 
 
-
-    componentDidMount() {
-        this.begin()
+    async wrapper(node) {
+        await this.dfs(node);
+        this.setState({path: this.state.path.reverse()});
+        console.log(this.state.path);
     }
 
-
+    
     render() {
-        const { array } = this.state;
+        const { array, path } = this.state;
 
         return (
             <div className="Handler">
@@ -100,6 +118,7 @@ export default class Handler extends React.Component {
                         key={idx}
                         value={node.value}
                         isGoal={node.isGoal}
+                        isPath={node.isPath}
                         isActive={node.isActive}
                         className="node"
                     />
@@ -113,6 +132,7 @@ export default class Handler extends React.Component {
                         key={idx}
                         value={node.value}
                         isGoal={node.isGoal}
+                        isPath={node.isPath}
                         isActive={node.isActive}
                         className="node"
                     />
@@ -126,6 +146,7 @@ export default class Handler extends React.Component {
                         key={idx}
                         value={node.value}
                         isGoal={node.isGoal}
+                        isPath={node.isPath}
                         isActive={node.isActive}
                         className="node"
                     />
@@ -139,14 +160,15 @@ export default class Handler extends React.Component {
                         key={idx}
                         value={node.value}
                         isGoal={node.isGoal}
+                        isPath={node.isPath}
                         isActive={node.isActive}
                         className="node"
                     />
                     );
                 })}
                 </Layer>
-                <button onClick={() => this.dfs(array[0])}>search</button>
-                <button onClick={() => console.log(this.state.path)}>print path</button>
+                <p>{path.join(' ')}</p>
+                <button onClick={() => this.wrapper(array[0])}>depth first search</button>
             </div>
         );
     }
