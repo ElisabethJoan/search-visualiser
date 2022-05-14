@@ -1,0 +1,8 @@
+.lineContainer {
+    background: red;
+    z-index: -1;
+}
+
+.handler {
+    z-index: 2;
+}

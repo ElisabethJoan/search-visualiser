@@ -7,17 +7,18 @@ export default class Node extends Component {
             value,
             isGoal,
             isPath,
-            isActive
+            isActive, 
+            className
         } = this.props;
 
         const type = isPath
-        ? ' path' : isActive
-        ? ' active' : isGoal
-        ? ' goal' : '';
+        ? 'path' : isActive
+        ? 'active' : isGoal
+        ? 'goal' : '';
 
         return (
             <div
-                className={`node${type}`}>
+                className={`node ${className} ${type}`}>
                 {value}
             </div>
         );
