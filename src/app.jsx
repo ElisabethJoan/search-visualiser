@@ -23,7 +23,7 @@ export default class App extends React.Component {
     }
 
 
-    begin() {
+    async begin() {
         let nums = new Set();
         while (nums.size !== 15) {
             nums.add(Math.floor(Math.random() * 99) + 1);
@@ -31,13 +31,25 @@ export default class App extends React.Component {
         let arr = Array.from(nums)
         
         let tree = new BalancedBinaryTree(arr);
-        let array = tree.toNodeArray();
+        let array = await tree.toNodeArray();
+
+        console.log(array);
+
+        let goalIdx = Math.floor(Math.random() * 15) + 7;
+        array[goalIdx].isGoal = true;
+
+        array.forEach((node, idx) => {
+            node.idx = idx;
+        })
         
-        return array;
+        // return array;
+        this.setState({array: array})
     }
 
     componentDidMount() {
-        let array = this.begin();
+        this.begin();
+        // let array = this.begin();
+        // console.log(array)
 
 
         let i = 0;
@@ -53,17 +65,18 @@ export default class App extends React.Component {
                 second = false;
             }
         })
-
-        console.log(lines);
       
-        let goalIdx = Math.floor(Math.random() * 15) + 7;
-
-        array[goalIdx].isGoal = true;
+        // let goalIdx = Math.floor(Math.random() * 15) + 7;
         
-        array.forEach((node, idx) => {
-            node.idx = idx;
-        })
-        this.setState({ array: array, lines: lines });
+        // console.log(array.length)
+        // array[goalIdx].isGoal = true;
+        
+        // array.forEach((node, idx) => {
+        //     node.idx = idx;
+        // })
+        // this.setState({ array: array, lines: lines });
+        this.setState({lines: lines})
+        
     }
 
     async flipActive(node) {
@@ -130,7 +143,6 @@ export default class App extends React.Component {
 
     render() {
         const { array, lines, path } = this.state;
-        console.log(lines);
         // const { path } = this.state;
 
         let from = 0;

@@ -33,7 +33,7 @@ export default class BalancedBinaryTree {
         return node;
     }
 
-    toNodeArray() {
+    async toNodeArray() {
         let nodeArray = [];
 
         function breadthFirstTraversal(node, depth) {
