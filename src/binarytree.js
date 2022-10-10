@@ -33,23 +33,23 @@ export default class BalancedBinaryTree {
         return node;
     }
 
-    async toNodeArray() {
+    toNodeArray() {
         let nodeArray = [];
 
-        function breadthFirstTraversal(node, depth) {
+        function levelOrderTraversal(node, depth) {
             if (node === null) {
                 return;
             }
             if (depth === 1) {
                 nodeArray.push(node);
             } else if (depth > 1) {
-                breadthFirstTraversal(node.left, depth - 1);
-                breadthFirstTraversal(node.right, depth - 1);
+                levelOrderTraversal(node.left, depth - 1);
+                levelOrderTraversal(node.right, depth - 1);
             }
         }
 
         for (let i = 1; i <= 4; i++) {
-            breadthFirstTraversal(this.root, i);
+            levelOrderTraversal(this.root, i);
         }
 
         return nodeArray;

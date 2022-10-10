@@ -31,18 +31,15 @@ export default class App extends React.Component {
         let arr = Array.from(nums)
         
         let tree = new BalancedBinaryTree(arr);
-        let array = await tree.toNodeArray();
+        let array = tree.toNodeArray();
 
-        console.log(array);
-
-        let goalIdx = Math.floor(Math.random() * 15) + 7;
+        let goalIdx = Math.floor(Math.random() * 8) + 7;
         array[goalIdx].isGoal = true;
 
         array.forEach((node, idx) => {
-            node.idx = idx;
+            node.idx = idx
         })
-        
-        // return array;
+
         this.setState({array: array})
     }
 
