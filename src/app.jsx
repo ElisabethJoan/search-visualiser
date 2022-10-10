@@ -33,7 +33,7 @@ export default class App extends React.Component {
         let tree = new BalancedBinaryTree(arr);
         let array = tree.toNodeArray();
 
-        let goalIdx = Math.floor(Math.random() * 8) + 7;
+        let goalIdx = Math.floor(Math.random() * 12) + 3;
         array[goalIdx].isGoal = true;
 
         array.forEach((node, idx) => {
@@ -92,48 +92,96 @@ export default class App extends React.Component {
     }
 
 
-    async dfs(node) {
-        if (node === null) {
-            return false;
-        } else {
+    async bfs(root) {
+        if (root === null) {
+            return;
+        }
+
+        let queue = [root];
+        let explored = [];          
+
+        while (queue.length > 0) {
+            let node = queue[0];
             await this.flipActive(node);
-        }
+            
+            if (node.isGoal === true)
+            {
+                explored.push(node);
+                break;
+            }
 
-        if (node.isGoal === true) {
-            node.isPath = true;
-            this.forceUpdate()
-            return true;
-        }
+            if (node.left !== null) {
+                queue.push(node.left)
+            }
 
-        if (await this.dfs(node.left)) {
-            await this.setStateSynchronous(({path: [...this.state.path, 'left']}));
-            node.isPath = true;
-            this.forceUpdate()
-            await timer(ANIMATION_DELAY);
-            return true;
-        }
-        
-        if (node.left !== null && node.right !== null) {
-            await this.flipActive(node);
-        }
+            if (node.right !== null) {
+                queue.push(node.right)
+            }
 
-        if (await this.dfs(node.right)) {
-            await this.setStateSynchronous(({path: [...this.state.path, 'right']}));
-            node.isPath = true;
-            this.forceUpdate()
-            await timer(ANIMATION_DELAY);
-            return true;
+            // node.isPath = true;
+            explored.push(queue.shift());
+            // this.forceUpdate();
         }
-
-        if (node.left !== null && node.right !== null) {
-            await this.flipActive(node);
-        }
+        // explored.forEach(e => {
+        //     console.log(e)
+        // })
+        return explored.length;
     }
 
 
-    async wrapper(node) {
+    async bfsWrapper(node) {
+        this.setState({path:[]});
+        let count = await this.bfs(node);
+        console.log("Path found in " + count + " nodes")
+    }
+
+
+    async dfsWrapper(node) {
         this.setState({path: []});
-        await this.dfs(node);
+        let visited = new Set();
+        let self = this
+
+        async function dfs(node) {
+            visited.add(node);
+            if (node === null) {
+                return false;
+            } else {
+                await self.flipActive(node);
+            }
+    
+            if (node.isGoal === true) {
+                node.isPath = true;
+                self.forceUpdate()
+                return true;
+            }
+    
+            if (await dfs(node.left)) {
+                await self.setStateSynchronous(({path: [...self.state.path, 'left']}));
+                node.isPath = true;
+                self.forceUpdate()
+                await timer(ANIMATION_DELAY);
+                return true;
+            }
+            
+            if (node.left !== null && node.right !== null) {
+                await self.flipActive(node);
+            }
+    
+            if (await dfs(node.right)) {
+                await self.setStateSynchronous(({path: [...self.state.path, 'right']}));
+                node.isPath = true;
+                self.forceUpdate()
+                await timer(ANIMATION_DELAY);
+                return true;
+            }
+    
+            if (node.left !== null && node.right !== null) {
+                await self.flipActive(node);
+            }
+        }
+
+        await dfs(node);
+        console.log("Path found in " + visited.size + " nodes")
         this.setState({path: this.state.path.reverse()});
     }
 
@@ -179,7 +227,8 @@ export default class App extends React.Component {
                     })}
                 </div>
                 <p>{path.join(' ')}</p>
-                <button onClick={() => this.wrapper(array[0])}>depth first search</button>
+                <button onClick={() => this.dfsWrapper(array[0])}>depth first search</button>
+                <button onClick={() => this.bfsWrapper(array[0])}>bfs</button>
                 {/* <button onClick={() => this.wrapper(this.props.nodes[0])}>depth first search</button> */}
             </div>
         );
