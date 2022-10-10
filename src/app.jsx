@@ -185,6 +185,132 @@ export default class App extends React.Component {
         this.setState({path: this.state.path.reverse()});
     }
 
+    async monteCarloSerach() {
+
+    }
+
+    async levelOrderTraversal(node) {
+        let self = this
+
+        async function lot(node, depth) {
+            if (node === null) {
+                return;
+            }
+            if (depth === 1) {
+                await self.flipActive(node);
+            } else if (depth > 1) {
+                await lot(node.left, depth - 1);
+                await lot(node.right, depth - 1);
+            }
+        }
+
+        for (let i = 1; i <= 4; i++) {
+            await lot(node, i);
+        }
+    }
+
+    async preOrderTraversal(node) {
+        let visited = new Set();
+        let self = this
+
+        async function dfs(node) {
+            visited.add(node);
+            if (node === null) {
+                return false;
+            } else {
+                await self.flipActive(node);
+            }
+    
+            if (await dfs(node.left)) {
+                await timer(ANIMATION_DELAY);
+                return true;
+            }
+            
+            // if (node.left !== null && node.right !== null) {
+            //     await self.flipActive(node);
+            // }
+    
+            if (await dfs(node.right)) {
+                await timer(ANIMATION_DELAY);
+                return true;
+            }
+    
+            // if (node.left !== null && node.right !== null) {
+            //     await self.flipActive(node);
+            // }
+        }
+
+        await dfs(node);
+    }
+
+    async postOrderTraversal(node) {
+        let visited = new Set();
+        let self = this
+
+        async function dfs(node) {
+            visited.add(node);
+            if (node === null) {
+                return false;
+            }
+
+            if (await dfs(node.left)) {
+                await timer(ANIMATION_DELAY);
+                return true;
+            }
+
+            // if (node.left !== null && node.right !== null) {
+            //     await self.flipActive(node);
+            // }
+
+            if (await dfs(node.right)) {
+                await timer(ANIMATION_DELAY);
+                return true;
+            }
+
+            // if (node.left !== null && node.right !== null) {
+            //     await self.flipActive(node);
+            // }
+
+            await self.flipActive(node);
+        }
+
+        await dfs(node);
+    }
+
+    async inOrderTraversal(node) {
+        let visited = new Set();
+        let self = this
+
+        async function dfs(node) {
+            visited.add(node);
+            if (node === null) {
+                return false;
+            }
+
+            if (await dfs(node.left)) {
+                await timer(ANIMATION_DELAY);
+                return true;
+            }
+
+            // if (node.left !== null && node.right !== null) {
+            //     await self.flipActive(node);
+            // }
+
+            await self.flipActive(node);
+
+            if (await dfs(node.right)) {
+                await timer(ANIMATION_DELAY);
+                return true;
+            }
+
+            // if (node.left !== null && node.right !== null) {
+            //     await self.flipActive(node);
+            // }
+        }
+
+        await dfs(node);
+    }
+
 
     render() {
         const { array, lines, path } = this.state;
@@ -229,6 +355,11 @@ export default class App extends React.Component {
                 <p>{path.join(' ')}</p>
                 <button onClick={() => this.dfsWrapper(array[0])}>depth first search</button>
                 <button onClick={() => this.bfsWrapper(array[0])}>bfs</button>
+                <button onClick={() => this.levelOrderTraversal(array[0])}>lot</button>
+                <button onClick={() => this.preOrderTraversal(array[0])}>preOT</button>
+                <button onClick={() => this.inOrderTraversal(array[0])}>inOT</button>
+                <button onClick={() => this.postOrderTraversal(array[0])}>postOT</button>
+                <button onClick={() => this.monteCarloTraversal(array[0])}>mot</button>
                 {/* <button onClick={() => this.wrapper(this.props.nodes[0])}>depth first search</button> */}
             </div>
         );
