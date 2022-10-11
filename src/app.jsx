@@ -185,10 +185,6 @@ export default class App extends React.Component {
         this.setState({path: this.state.path.reverse()});
     }
 
-    async monteCarloSerach() {
-
-    }
-
     async levelOrderTraversal(node) {
         let self = this
 
@@ -206,6 +202,69 @@ export default class App extends React.Component {
 
         for (let i = 1; i <= 4; i++) {
             await lot(node, i);
+        }
+    }
+
+    // https://leetcode.com/problems/binary-tree-level-order-traversal-ii/
+    async reverseLOT(node) {
+        let self = this
+        console.log("test")
+
+        async function lot(node, depth) {
+            if (node === null) {
+                return;
+            }
+            if (depth === 1) {
+                await self.flipActive(node);
+            } else if (depth > 1) {
+                await lot(node.left, depth - 1);
+                await lot(node.right, depth - 1);
+            }
+        }
+
+        for (let i = 4; i > 0; i--) {
+            console.log(i)
+            await lot(node, i);
+        }
+    }
+
+    // https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/
+    async zigZagLOT(node) {
+        let self = this;
+
+        async function zigzagL(node, depth) {
+            if (node === null) {
+                return;
+            }
+            if (depth === 1) {
+                await self.flipActive(node);
+            } else if (depth > 1) {
+                await zigzagL(node.left, depth - 1);
+                await zigzagL(node.right, depth - 1);
+            }
+        }
+
+        async function zigzagR(node, depth) {
+            if (node === null) {
+                return;
+            }
+            if (depth === 1) {
+                await self.flipActive(node);
+            } else if (depth > 1) {
+                await zigzagR(node.right, depth - 1);
+                await zigzagR(node.left, depth - 1);
+            }
+        }
+
+        for (let i = 1; i <= 4; i++) {
+            console.log(i)
+            console.log(i % 2)
+            if (i % 2 === 1) {
+                await zigzagL(node, i);
+            } else {
+                await zigzagR(node, i);
+            }
+           
         }
     }
 
@@ -359,7 +418,9 @@ export default class App extends React.Component {
                 <button onClick={() => this.preOrderTraversal(array[0])}>preOT</button>
                 <button onClick={() => this.inOrderTraversal(array[0])}>inOT</button>
                 <button onClick={() => this.postOrderTraversal(array[0])}>postOT</button>
-                <button onClick={() => this.monteCarloTraversal(array[0])}>mot</button>
+                <button onClick={() => this.zigZagLOT(array[0])}>zigzag</button>
+                <button onClick={() => this.reverseLOT(array[0])}>reverseLOT</button>
+                <button onClick={() => this.verticalOrderTraversal(array[0])}>vertLOT</button>
                 {/* <button onClick={() => this.wrapper(this.props.nodes[0])}>depth first search</button> */}
             </div>
         );
