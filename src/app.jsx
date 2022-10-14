@@ -10,7 +10,7 @@ import "rsuite/dist/rsuite.min.css";
 import "./app.css";
 import "./handler.css";
 
-const ANIMATION_DELAY = 200;
+// const ANIMATION_DELAY = 200;
 
 const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -22,6 +22,7 @@ export default class App extends React.Component {
       array: [],
       lines: [],
       path: [],
+      ANIMATION_DELAY: 200,
     };
   }
 
@@ -88,7 +89,7 @@ export default class App extends React.Component {
   async flipActive(node) {
     node.isActive = !node.isActive;
     this.forceUpdate();
-    await timer(ANIMATION_DELAY);
+    await timer(this.state.ANIMATION_DELAY);
     node.isActive = !node.isActive;
     this.forceUpdate();
   }
@@ -168,7 +169,7 @@ export default class App extends React.Component {
         await self.setStateSynchronous({ path: [...self.state.path, "left"] });
         node.isPath = true;
         self.forceUpdate();
-        await timer(ANIMATION_DELAY);
+        await timer(self.state.ANIMATION_DELAY);
         return true;
       }
 
@@ -180,7 +181,7 @@ export default class App extends React.Component {
         await self.setStateSynchronous({ path: [...self.state.path, "right"] });
         node.isPath = true;
         self.forceUpdate();
-        await timer(ANIMATION_DELAY);
+        await timer(self.state.ANIMATION_DELAY);
         return true;
       }
 
@@ -268,7 +269,7 @@ export default class App extends React.Component {
         for (let distance = leftMin; distance <= rightMax; distance++) {
             let temp = lookup.get(distance)
             for await (const element of temp) {
-                await timer(ANIMATION_DELAY);
+                await timer(self.state.ANIMATION_DELAY);
                 await self.flipActive(element[0])
             }
         }
@@ -352,7 +353,7 @@ export default class App extends React.Component {
       }
 
       if (await dfs(node.left)) {
-        await timer(ANIMATION_DELAY);
+        await timer(this.state.ANIMATION_DELAY);
         return true;
       }
 
@@ -361,7 +362,7 @@ export default class App extends React.Component {
       // }
 
       if (await dfs(node.right)) {
-        await timer(ANIMATION_DELAY);
+        await timer(this.state.ANIMATION_DELAY);
         return true;
       }
 
@@ -384,7 +385,7 @@ export default class App extends React.Component {
       }
 
       if (await dfs(node.left)) {
-        await timer(ANIMATION_DELAY);
+        await timer(this.state.ANIMATION_DELAY);
         return true;
       }
 
@@ -393,7 +394,7 @@ export default class App extends React.Component {
       // }
 
       if (await dfs(node.right)) {
-        await timer(ANIMATION_DELAY);
+        await timer(this.state.ANIMATION_DELAY);
         return true;
       }
 
@@ -418,7 +419,7 @@ export default class App extends React.Component {
       }
 
       if (await dfs(node.left)) {
-        await timer(ANIMATION_DELAY);
+        await timer(this.state.ANIMATION_DELAY);
         return true;
       }
 
@@ -429,7 +430,7 @@ export default class App extends React.Component {
       await self.flipActive(node);
 
       if (await dfs(node.right)) {
-        await timer(ANIMATION_DELAY);
+        await timer(this.state.ANIMATION_DELAY);
         return true;
       }
 
@@ -480,9 +481,9 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { array, lines, path } = this.state;
+    const { array, lines, path, ANIMATION_DELAY } = this.state;
     // const { path } = this.state;
-
+    console.log(ANIMATION_DELAY)
     let from = 0;
 
     return (
@@ -562,8 +563,11 @@ export default class App extends React.Component {
           
           <ul>
             <li><h5>Settings</h5></li>
-            <li>Animation Speed</li>
-            <li><Slider defaultValue={50} min={10} step={10} max={100} graduated progress /></li>
+            <li>Animation Delay</li>
+            <li><Slider defaultValue={this.state.ANIMATION_DELAY} min={100} step={50} max={500} graduated progress value={this.state.ANIMATION_DELAY}
+                onChange={value => {
+                    this.setState({ ANIMATION_DELAY: value });
+                }}/></li>
             <li>Tree Height</li>
             <li><Slider defaultValue={4} min={3} step={1} max={6} graduated progress /></li>
           </ul>

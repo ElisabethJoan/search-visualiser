@@ -9,6 +9,10 @@
     list-style-type: none;
 }
 
+.interface li {
+    margin: 10px 0;
+}
+
 .interface button {
     width: 150px;
 }
