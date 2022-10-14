@@ -1,0 +1,14 @@
+.interface {
+    width: 80%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    text-align: center;
+}
+
+.interface ul {
+    list-style-type: none;
+}
+
+.interface button {
+    width: 150px;
+}

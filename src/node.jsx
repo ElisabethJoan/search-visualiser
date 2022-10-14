@@ -18,7 +18,7 @@ export default class Node extends Component {
 
         return (
             <div
-                className={`node ${className} ${type}`}>
+                className={`myNode ${className} ${type}`}>
                 {value}
             </div>
         );
