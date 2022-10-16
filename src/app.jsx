@@ -24,6 +24,7 @@ export default class App extends React.Component {
             array: [],
             // lines: [],
             // path: [],
+            BST_ACTIVE: false,
             ANIMATION_DELAY: 200,
         };
     }
@@ -131,6 +132,8 @@ export default class App extends React.Component {
 
     //     index = 0;
     //     this.arrayToBST(arr, node);
+
+    //     // this.setState(prevState => ({BST_ACTIVE: !prevState.BST_ACTIVE}))
     // }
 
     // async storeInorder() {
@@ -150,7 +153,7 @@ export default class App extends React.Component {
     // }
 
     render() {
-        const { array, ANIMATION_DELAY } = this.state;
+        const { array, BST_ACTIVE, ANIMATION_DELAY } = this.state;
         let from = 0;
 
         return (
@@ -171,7 +174,11 @@ export default class App extends React.Component {
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => this.BinarySearch(array[0])}>Binary Search</button>
+                            <button 
+                                disabled={!BST_ACTIVE} 
+                                onClick={() => this.BinarySearch(array[0])}>
+                                    Binary Search
+                            </button>
                         </li>
                     </ul>
                     <ul>
@@ -221,7 +228,7 @@ export default class App extends React.Component {
                     </ul>
                     <ul>
                         <li><h5>Settings</h5></li>
-                        <li><Checkbox> Binary Search Tree </Checkbox></li>
+                        <li><Checkbox onChange={() => this.setState(prevState => ({BST_ACTIVE: !prevState.BST_ACTIVE}))}> Binary Search Tree </Checkbox></li>
                         <li>Animation Delay</li>
                         <li><Slider defaultValue={ANIMATION_DELAY} min={50} step={50}
                             max={300} graduated progress value={ANIMATION_DELAY}
