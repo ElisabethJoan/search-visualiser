@@ -67,6 +67,48 @@ async function bfs(root) {
     return explored;
 }
 
+
+async function binarySearch(tree, goal) {
+    let path = [];
+    
+    let temp = structuredClone(tree)
+    temp.sort(function (a, b) {
+        return a.value - b.value;
+    });
+
+    async function inner(nodes, l, r, goal) {
+        if (r >= l) {
+            let mid = l + Math.floor((r - l) / 2);
+            path.push(nodes[mid])
+     
+            if (nodes[mid].value === goal.value) {
+                return mid;
+            }
+
+            if (nodes[mid].value > goal.value) {
+                return inner(nodes, l, mid - 1, goal);
+            }
+
+            return inner(nodes, mid + 1, r, goal);
+        }
+     
+        return false;
+    }
+
+    await inner(temp, 0, tree.length - 1, goal)
+
+    let nodes = [];
+    tree.forEach((node) => {
+        path.forEach((tempNode) => {
+            if (node.value === tempNode.value) {
+                nodes.push(node);
+            }
+        })
+    })
+
+    return [nodes];
+}
+
 // --------------- TRAVERSALS ---------------
 async function preOrderTraversal(node) {
     let visited = [];
@@ -285,6 +327,6 @@ async function zigZagLOT(node) {
 }
 
 export {
-    dfs, bfs, preOrderTraversal, inOrderTraversal, postOrderTraversal,
+    dfs, bfs, binarySearch, preOrderTraversal, inOrderTraversal, postOrderTraversal,
     levelOrderTraversal, verticalOrderTraversal, reverseLOT, zigZagLOT
 };

@@ -3,7 +3,7 @@ import React from "react";
 import { Slider, Checkbox } from 'rsuite';
 
 import {
-    dfs, bfs, preOrderTraversal, inOrderTraversal, postOrderTraversal,
+    dfs, bfs, binarySearch, preOrderTraversal, inOrderTraversal, postOrderTraversal,
     levelOrderTraversal, verticalOrderTraversal, reverseLOT, zigZagLOT
 } from "./algorithms";
 import BalancedBinaryTree from "./binarytree";
@@ -21,8 +21,10 @@ export default class App extends React.Component {
         super(props);
 
         this.state = {
+            nums: [],
             tree: [],
             visited: [],
+            goalIdx: 0,
             // lines: [],
             // path: [],
             BST_ACTIVE: false,
@@ -30,28 +32,38 @@ export default class App extends React.Component {
         };
     }
 
-    async begin() {
-        let nums = new Set();
-        while (nums.size !== 15) {
-            nums.add(Math.floor(Math.random() * 99) + 1);
-        }
-        let arr = Array.from(nums);
+    async begin(sorted, nums) {
+        let goalIdx = this.state.goalIdx;
 
-        let tree = new BalancedBinaryTree(arr);
+        if (sorted) {
+            nums.sort(function (a, b) {
+                return a - b;
+            });
+
+            this.setState({ BST_ACTIVE: true })
+        } else {
+            nums = new Set();
+            while (nums.size !== 15) {
+                nums.add(Math.floor(Math.random() * 99) + 1);
+            }
+            nums = Array.from(nums);
+            goalIdx = Math.floor(Math.random() * 12) + 3;
+        }
+
+        let tree = new BalancedBinaryTree(nums);
         let array = tree.toNodeArray();
 
-        let goalIdx = Math.floor(Math.random() * 12) + 3;
         array[goalIdx].isGoal = true;
 
         array.forEach((node, idx) => {
             node.idx = idx;
         });
 
-        this.setState({ tree: array });
+        this.setState({ nums: nums, tree: array, goalIdx: goalIdx });
     }
 
     componentDidMount() {
-        this.begin();
+        this.begin(false, []);
 
         // let i = 0;
         // let second = false;
@@ -108,53 +120,8 @@ export default class App extends React.Component {
         })
     }
 
-    // TODO
-    // async BinarySearch() {
-
-    // }
-
-    // TODO
-    // async makeBST(node) {
-    //     let index;
-
-    //     if (node === null) {
-    //         return;
-    //     }
-    //     let n = this.countNodes(node);
-
-    //     let arr = new Array(n);
-    //     arr.fill(0);
-
-    //     this.storeInorder(node, arr);
-
-    //     arr.sort(function (a, b) {
-    //         return a - b;
-    //     });
-
-    //     index = 0;
-    //     this.arrayToBST(arr, node);
-
-    //     // this.setState(prevState => ({BST_ACTIVE: !prevState.BST_ACTIVE}))
-    // }
-
-    // async storeInorder() {
-    //     return 0;
-    // }
-
-    // async arrayToBST() {
-    //     return 0;
-    // }
-
-    // async countNodes(node) {
-    //     if (node == null) {
-    //         return 0;
-    //     }
-
-    //     return this.countNodes(node.left) + this.countNodes(node.right) + 1;
-    // }
-
     render() {
-        const { tree, visited, BST_ACTIVE, ANIMATION_DELAY } = this.state;
+        const { nums, tree, visited, goalIdx, BST_ACTIVE, ANIMATION_DELAY } = this.state;
         let from = 0;
 
         return (
@@ -177,7 +144,7 @@ export default class App extends React.Component {
                         <li>
                             <button 
                                 disabled={!BST_ACTIVE} 
-                                onClick={() => this.BinarySearch(tree[0])}>
+                                onClick={() => this.displayPath(binarySearch(tree, tree[goalIdx]))}>
                                     Binary Search
                             </button>
                         </li>
@@ -229,7 +196,7 @@ export default class App extends React.Component {
                     </ul>
                     <ul>
                         <li><h5>Settings</h5></li>
-                        <li><Checkbox onChange={() => this.setState(prevState => ({BST_ACTIVE: !prevState.BST_ACTIVE}))}> Binary Search Tree </Checkbox></li>
+                        <li><Checkbox onChange={() => this.begin(true, nums)}> Binary Search Tree </Checkbox></li>
                         <li>Animation Delay</li>
                         <li><Slider defaultValue={ANIMATION_DELAY} min={50} step={50}
                             max={300} graduated progress value={ANIMATION_DELAY}
