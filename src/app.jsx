@@ -21,7 +21,8 @@ export default class App extends React.Component {
         super(props);
 
         this.state = {
-            array: [],
+            tree: [],
+            visited: [],
             // lines: [],
             // path: [],
             BST_ACTIVE: false,
@@ -46,7 +47,7 @@ export default class App extends React.Component {
             node.idx = idx;
         });
 
-        this.setState({ array: array });
+        this.setState({ tree: array });
     }
 
     componentDidMount() {
@@ -103,8 +104,8 @@ export default class App extends React.Component {
                     this.forceUpdate();
                 }
             }
+            this.setState({ visited: Array.from(visited) })
         })
-
     }
 
     // TODO
@@ -153,7 +154,7 @@ export default class App extends React.Component {
     // }
 
     render() {
-        const { array, BST_ACTIVE, ANIMATION_DELAY } = this.state;
+        const { tree, visited, BST_ACTIVE, ANIMATION_DELAY } = this.state;
         let from = 0;
 
         return (
@@ -164,19 +165,19 @@ export default class App extends React.Component {
                             <h5>Search</h5>
                         </li>
                         <li>
-                            <button onClick={() => this.displayPath(dfs(array[0]))}>
+                            <button onClick={() => this.displayPath(dfs(tree[0]))}>
                                 Depth-first Search
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => this.displayPath(bfs(array[0]))}>
+                            <button onClick={() => this.displayPath(bfs(tree[0]))}>
                                 Breadth-first Search
                             </button>
                         </li>
                         <li>
                             <button 
                                 disabled={!BST_ACTIVE} 
-                                onClick={() => this.BinarySearch(array[0])}>
+                                onClick={() => this.BinarySearch(tree[0])}>
                                     Binary Search
                             </button>
                         </li>
@@ -186,22 +187,22 @@ export default class App extends React.Component {
                             <h5>Traversals</h5>
                         </li>
                         <li>
-                            <button onClick={() => this.displayPath(preOrderTraversal(array[0]))}>
+                            <button onClick={() => this.displayPath(preOrderTraversal(tree[0]))}>
                                 Pre-order
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => this.displayPath(inOrderTraversal(array[0]))}>
+                            <button onClick={() => this.displayPath(inOrderTraversal(tree[0]))}>
                                 In-order
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => this.displayPath(postOrderTraversal(array[0]))}>
+                            <button onClick={() => this.displayPath(postOrderTraversal(tree[0]))}>
                                 Post-order
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => this.displayPath(levelOrderTraversal(array[0]))}>
+                            <button onClick={() => this.displayPath(levelOrderTraversal(tree[0]))}>
                                 Level-order
                             </button>
                         </li>
@@ -211,17 +212,17 @@ export default class App extends React.Component {
                             <h5>Challenge Traversals</h5>
                         </li>
                         <li>
-                            <button onClick={() => this.displayPath(verticalOrderTraversal(array[0]))}>
+                            <button onClick={() => this.displayPath(verticalOrderTraversal(tree[0]))}>
                                 Vertical-order
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => this.displayPath(reverseLOT(array[0]))}>
+                            <button onClick={() => this.displayPath(reverseLOT(tree[0]))}>
                                 Reverse Level-order
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => this.displayPath(zigZagLOT(array[0]))}>
+                            <button onClick={() => this.displayPath(zigZagLOT(tree[0]))}>
                                 ZigZag Level-order
                             </button>
                         </li>
@@ -244,7 +245,7 @@ export default class App extends React.Component {
                         let to = from * 2 + 1;
                         return (
                             <Layer key={idx}>
-                                {array.slice(from, to).map((node, innerIdx) => {
+                                {tree.slice(from, to).map((node, innerIdx) => {
                                     // {this.props.nodes.slice(from, to).map((node, innerIdx) => {
                                     if (innerIdx === from) {
                                         from = to;
@@ -263,6 +264,21 @@ export default class App extends React.Component {
                             </Layer>
                         );
                     })}
+                </div>
+                <br/><br/>
+                <div className="traversalPath">
+                    <h4>Traversal Path</h4>
+                    <Layer>
+                        {visited.map((node, idx) => {
+                            return (
+                                <Node
+                                    key={idx}
+                                    value={node.value}
+                                    isActive={true}
+                                />
+                            );
+                        })}
+                    </Layer>
                 </div>
                 {/* <div className="realLines">
                     {lines.map((line) => {
