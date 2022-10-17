@@ -43,11 +43,11 @@ async function bfs(root) {
         return;
     }
 
-    let queue = [root];
+    let queue = [[root, [root]]];
     let explored = [];
 
     while (queue.length > 0) {
-        let node = queue[0];
+        let [node, path] = queue[0];
 
         if (node.isGoal === true) {
             explored.push(node);
@@ -55,16 +55,17 @@ async function bfs(root) {
         }
 
         if (node.left !== null) {
-            queue.push(node.left);
+            queue.push([node.left, path.concat([node.left])]);
         }
 
         if (node.right !== null) {
-            queue.push(node.right);
+            queue.push([node.right, path.concat([node.right])]);
         }
 
-        explored.push(queue.shift());
+        explored.push(queue.shift()[0]);
     }
-    return explored;
+
+    return [explored, queue[0][1].reverse()];
 }
 
 

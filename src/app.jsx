@@ -1,6 +1,7 @@
 import React from "react";
-// import LineTo from "react-lineto";
+import LineTo from "react-lineto";
 import { Slider, Checkbox } from 'rsuite';
+import { Mutex, Semaphore } from 'async-mutex';
 
 import {
     dfs, bfs, binarySearch, preOrderTraversal, inOrderTraversal, postOrderTraversal,
@@ -14,6 +15,8 @@ import "rsuite/dist/rsuite.min.css";
 import "./app.css";
 import "./handler.css";
 
+let lock = new Mutex();
+let sempahore = new Semaphore(1);
 const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
 export default class App extends React.Component {
@@ -25,7 +28,7 @@ export default class App extends React.Component {
             tree: [],
             visited: [],
             goalIdx: 0,
-            // lines: [],
+            lines: [],
             // path: [],
             BST_ACTIVE: false,
             ANIMATION_DELAY: 200,
@@ -65,28 +68,28 @@ export default class App extends React.Component {
     componentDidMount() {
         this.begin(false, []);
 
-        // let i = 0;
-        // let second = false;
-        // let lines = [];
+        let i = 0;
+        let second = false;
+        let lines = [];
 
-        // [...Array(14)].forEach((x, idx) => {
-        //     lines.push(
-        //         <LineTo
-        //             key={idx}
-        //             from={`${i}`}
-        //             to={`${i * 2 + (1 + second)}`}
-        //             borderColor="grey"
-        //         />
-        //     );
-        //     if (!second) {
-        //         second = true;
-        //     } else {
-        //         i++;
-        //         second = false;
-        //     }
-        // });
+        [...Array(14)].forEach((x, idx) => {
+            lines.push(
+                <LineTo
+                    key={idx}
+                    from={`${i}`}
+                    to={`${i * 2 + (1 + second)}`}
+                    borderColor="grey"
+                />
+            );
+            if (!second) {
+                second = true;
+            } else {
+                i++;
+                second = false;
+            }
+        });
 
-        // this.setState({ lines: lines });
+        this.setState({ lines: lines });
     }
 
     async flipActive(node) {
@@ -98,7 +101,10 @@ export default class App extends React.Component {
     }
 
     async displayPath(promise) {
+        let release = await lock.acquire();
         let visited = new Set();
+
+        let [ , releaseSemaphore] = await sempahore.acquire();
         promise.then(async (arrays) => {
             let nodes = arrays[0];
             for (const node of nodes) {
@@ -117,11 +123,13 @@ export default class App extends React.Component {
                 }
             }
             this.setState({ visited: Array.from(visited) })
+            await releaseSemaphore()
         })
+        release();
     }
 
     render() {
-        const { nums, tree, visited, goalIdx, BST_ACTIVE, ANIMATION_DELAY } = this.state;
+        const { nums, tree, visited, goalIdx, lines, BST_ACTIVE, ANIMATION_DELAY } = this.state;
         let from = 0;
 
         return (
@@ -213,7 +221,6 @@ export default class App extends React.Component {
                         return (
                             <Layer key={idx}>
                                 {tree.slice(from, to).map((node, innerIdx) => {
-                                    // {this.props.nodes.slice(from, to).map((node, innerIdx) => {
                                     if (innerIdx === from) {
                                         from = to;
                                     }
@@ -247,11 +254,13 @@ export default class App extends React.Component {
                         })}
                     </Layer>
                 </div>
-                {/* <div className="realLines">
-                    {lines.map((line) => {
-                        return line;
+                <div className="realLines">
+                    {lines.map((line, idx) => {
+                        return (
+                            <LineTo key={idx} from={line.props.from} to={line.props.to}/>
+                        )
                     })}
-                </div> */}
+                </div>
                 {/* <p>{path.join(" ")}</p> */}
             </div>
         );
