@@ -1,7 +1,19 @@
 .layer {
     height: 100px;
-    /* width: 800px; */
+    width: 98vw;
     display: grid;
     grid-auto-flow: column;
     z-index: 1;  
+}
+
+.layer4 .myNode {
+    width: 48px;
+    height: 48px;
+    font: 24px Arial, sans-serif;
+}
+
+.layer5 .myNode {
+    width: 40px;
+    height: 40px;
+    font: 18px Arial, sans-serif;
 }

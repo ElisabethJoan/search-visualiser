@@ -31,6 +31,7 @@ export default class App extends React.Component {
             BST_ACTIVE: false,
             ANIMATION_DELAY: 200,
             TREE_HEIGHT: 4,
+            width: 0, height: 0
         };
     }
 
@@ -64,8 +65,17 @@ export default class App extends React.Component {
         this.setState({ nums: nums, tree: array, goalIdx: goalIdx });
     }
 
+    updateDimensions = () => {
+        this.setState({ width: window.innerWidth, height: window.innerHeight });
+    };
+
     componentDidMount() {
         this.begin(false, []);
+        window.addEventListener('resize', this.updateDimensions);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -247,7 +257,7 @@ export default class App extends React.Component {
                     {[...Array(TREE_HEIGHT)].map((_, idx) => {
                         let to = from * 2 + 1;
                         return (
-                            <Layer key={idx}>
+                            <Layer key={idx} className={idx}>
                                 {tree.slice(from, to).map((node, innerIdx) => {
                                     if (innerIdx === from) {
                                         from = to;
@@ -280,7 +290,7 @@ export default class App extends React.Component {
                 <br/><br/>
                 <div className="traversalPath">
                     <h4>Traversal Path</h4>
-                    <Layer>
+                    <Layer className="traversal">
                         {visited.map((node, idx) => {
                             return (
                                 <Node
