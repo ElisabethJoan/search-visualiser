@@ -199,7 +199,7 @@ export default class App extends React.Component {
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => this.displayPath(levelOrderTraversal(tree[0]))}>
+                            <button onClick={() => this.displayPath(levelOrderTraversal(tree[0], TREE_HEIGHT))}>
                                 Level-order
                             </button>
                         </li>
@@ -214,12 +214,12 @@ export default class App extends React.Component {
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => this.displayPath(reverseLOT(tree[0]))}>
+                            <button onClick={() => this.displayPath(reverseLOT(tree[0], TREE_HEIGHT))}>
                                 Reverse Level-order
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => this.displayPath(zigZagLOT(tree[0]))}>
+                            <button onClick={() => this.displayPath(zigZagLOT(tree[0], TREE_HEIGHT))}>
                                 ZigZag Level-order
                             </button>
                         </li>

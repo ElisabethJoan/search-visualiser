@@ -182,7 +182,7 @@ async function postOrderTraversal(node) {
     return [visited];
 }
 
-async function levelOrderTraversal(node) {
+async function levelOrderTraversal(node, d) {
     let visited = [];
 
     async function lot(node, depth) {
@@ -197,7 +197,7 @@ async function levelOrderTraversal(node) {
         }
     }
 
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= d; i++) {
         await lot(node, i);
     }
 
@@ -262,11 +262,11 @@ async function verticalOrderTraversal(node) {
 
     await verticalSort(node);
 
-    return visited;
+    return [visited];
 }
 
 // https://leetcode.com/problems/binary-tree-level-order-traversal-ii/
-async function reverseLOT(node) {
+async function reverseLOT(node, d) {
     let visited = [];
 
     async function lot(node, depth) {
@@ -281,15 +281,15 @@ async function reverseLOT(node) {
         }
     }
 
-    for (let i = 4; i > 0; i--) {
+    for (let i = d; i > 0; i--) {
         await lot(node, i);
     }
 
-    return visited;
+    return [visited];
 }
 
 // https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/
-async function zigZagLOT(node) {
+async function zigZagLOT(node, d) {
     let visited = [];
 
     async function zigzagL(node, depth) {
@@ -316,7 +316,7 @@ async function zigZagLOT(node) {
         }
     }
 
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= d; i++) {
         if (i % 2 === 1) {
             await zigzagL(node, i);
         } else {
@@ -324,7 +324,7 @@ async function zigZagLOT(node) {
         }
     }
 
-    return visited;
+    return [visited];
 }
 
 export {
