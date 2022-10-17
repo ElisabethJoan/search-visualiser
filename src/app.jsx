@@ -13,7 +13,6 @@ import Node from "./node";
 
 import "rsuite/dist/rsuite.min.css";
 import "./app.css";
-import "./handler.css";
 
 let lock = new Mutex();
 let sempahore = new Semaphore(1);
@@ -29,9 +28,9 @@ export default class App extends React.Component {
             visited: [],
             goalIdx: 0,
             lines: [],
-            // path: [],
             BST_ACTIVE: false,
             ANIMATION_DELAY: 200,
+            TREE_HEIGHT: 4,
         };
     }
 
@@ -54,7 +53,7 @@ export default class App extends React.Component {
         }
 
         let tree = new BalancedBinaryTree(nums);
-        let array = tree.toNodeArray();
+        let array = tree.toNodeArray(this.state.TREE_HEIGHT);
 
         array[goalIdx].isGoal = true;
 
@@ -67,29 +66,51 @@ export default class App extends React.Component {
 
     componentDidMount() {
         this.begin(false, []);
+    }
 
-        let i = 0;
-        let second = false;
-        let lines = [];
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.tree[0] !== prevState.tree[0]) {
+            let i = 0;
+            let second = false;
+            let lines = [];
+    
+            [...Array(Math.pow(2, this.state.TREE_HEIGHT) - 2)].forEach((x, idx) => {
+                lines.push({from: `${i}`, to: `${i * 2 + (1 + second)}`});
+                if (!second) {
+                    second = true;
+                } else {
+                    i++;
+                    second = false;
+                }
+            });
+    
+            this.setState({ lines: lines })
+        }
 
-        [...Array(14)].forEach((x, idx) => {
-            lines.push(
-                <LineTo
-                    key={idx}
-                    from={`${i}`}
-                    to={`${i * 2 + (1 + second)}`}
-                    borderColor="grey"
-                />
-            );
-            if (!second) {
-                second = true;
-            } else {
-                i++;
-                second = false;
+        if (this.state.TREE_HEIGHT !== prevState.TREE_HEIGHT) {
+            let nums = new Set();
+
+            let nodeCount = Math.pow(2, this.state.TREE_HEIGHT) - 1
+            while (nums.size !== nodeCount) {
+                nums.add(Math.floor(Math.random() * 99) + 1);
             }
-        });
+            nums = Array.from(nums);
 
-        this.setState({ lines: lines });
+            let upper = Math.pow(2, this.state.TREE_HEIGHT - 2) - 1;
+            let lower = nodeCount - upper;
+            let goalIdx = Math.floor(Math.random() * lower) + upper;
+
+            let tree = new BalancedBinaryTree(nums);
+            let array = tree.toNodeArray(this.state.TREE_HEIGHT);
+
+            array[goalIdx].isGoal = true;
+
+            array.forEach((node, idx) => {
+                node.idx = idx;
+            });
+
+            this.setState({ nums: nums, tree: array, goalIdx: goalIdx });
+        }
     }
 
     async flipActive(node) {
@@ -129,7 +150,8 @@ export default class App extends React.Component {
     }
 
     render() {
-        const { nums, tree, visited, goalIdx, lines, BST_ACTIVE, ANIMATION_DELAY } = this.state;
+        const { nums, tree, visited, goalIdx, lines, BST_ACTIVE, ANIMATION_DELAY, 
+                TREE_HEIGHT } = this.state;
         let from = 0;
 
         return (
@@ -210,13 +232,19 @@ export default class App extends React.Component {
                             max={300} graduated progress value={ANIMATION_DELAY}
                             onChange={value => {
                                 this.setState({ ANIMATION_DELAY: value });
-                            }} /></li>
+                            }} />
+                        </li>
                         <li>Tree Height</li>
-                        <li><Slider defaultValue={4} min={3} step={1} max={6} graduated progress /></li>
+                        <li><Slider defaultValue={TREE_HEIGHT} min={3} step={1}
+                            max={6} graduated progress value={TREE_HEIGHT} 
+                            onChange={value => {
+                                this.setState({ TREE_HEIGHT: value })
+                            }} />
+                        </li>
                     </ul>
                 </div>
-                <div className="handler">
-                    {[...Array(4)].map((_, idx) => {
+                <div>
+                    {[...Array(TREE_HEIGHT)].map((_, idx) => {
                         let to = from * 2 + 1;
                         return (
                             <Layer key={idx}>
@@ -238,6 +266,16 @@ export default class App extends React.Component {
                             </Layer>
                         );
                     })}
+                    {lines.map((line, idx) => {
+                        return (
+                            <LineTo 
+                                key={idx}
+                                from={line.from}
+                                to={line.to}
+                                borderColor="grey"
+                            />
+                        );
+                    })}
                 </div>
                 <br/><br/>
                 <div className="traversalPath">
@@ -254,14 +292,6 @@ export default class App extends React.Component {
                         })}
                     </Layer>
                 </div>
-                <div className="realLines">
-                    {lines.map((line, idx) => {
-                        return (
-                            <LineTo key={idx} from={line.props.from} to={line.props.to}/>
-                        )
-                    })}
-                </div>
-                {/* <p>{path.join(" ")}</p> */}
             </div>
         );
     }
