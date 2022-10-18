@@ -22,6 +22,7 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
 
+        this.setStateOfParent.bind(this);
         this.state = {
             nums: [],
             tree: [],
@@ -159,6 +160,19 @@ export default class App extends React.Component {
         release();
     }
 
+    setStateOfParent = (goalIdx) => {
+        let array = this.state.tree;
+
+        array.forEach((node, idx) => {
+            node.isGoal = false;
+        });
+
+        array[goalIdx].isGoal = true;
+
+        this.setState({ tree: array, goalIdx: goalIdx });
+    }
+
+
     render() {
         const { nums, tree, visited, goalIdx, lines, BST_ACTIVE, ANIMATION_DELAY, 
                 TREE_HEIGHT } = this.state;
@@ -270,6 +284,7 @@ export default class App extends React.Component {
                                             isPath={node.isPath}
                                             isActive={node.isActive}
                                             className={node.idx}
+                                            setStateOfParent={this.setStateOfParent}
                                         />
                                     );
                                 })}

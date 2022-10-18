@@ -7,13 +7,16 @@
 }
 
 .layer4 .myNode {
-    width: 48px;
-    height: 48px;
-    font: 24px Arial, sans-serif;
+    font: 1.2vw Arial, sans-serif;
 }
 
 .layer5 .myNode {
-    width: 40px;
-    height: 40px;
-    font: 18px Arial, sans-serif;
+    font: 1vw Arial, sans-serif;
+}
+
+.layertraversal {
+    justify-content: center;
+    height: fit-content;
+    grid-auto-flow: row;
+    grid-template-columns: repeat(24, 4vw);
 }
