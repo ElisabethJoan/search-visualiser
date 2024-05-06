@@ -24,6 +24,7 @@ export default class App extends React.Component {
 
         this.setStateOfParent.bind(this);
         this.state = {
+            path: [],
             nums: [],
             tree: [],
             visited: [],
@@ -124,6 +125,8 @@ export default class App extends React.Component {
         }
     }
 
+
+
     async flipActive(node) {
         node.isActive = !node.isActive;
         this.forceUpdate();
@@ -131,10 +134,19 @@ export default class App extends React.Component {
         node.isActive = !node.isActive;
         this.forceUpdate();
     }
-
+    
+    async clearPath() {
+      const { path } = this.state;
+      path.forEach(element => {
+        element.isPath = false;
+      });
+      this.setState({ path: [] })
+    }
+    
     async displayPath(promise) {
         let release = await lock.acquire();
         let visited = new Set();
+        await this.clearPath();
 
         let [ , releaseSemaphore] = await sempahore.acquire();
         promise.then(async (arrays) => {
@@ -154,7 +166,7 @@ export default class App extends React.Component {
                     this.forceUpdate();
                 }
             }
-            this.setState({ visited: Array.from(visited) })
+            this.setState({ path: path, visited: Array.from(visited) })
             await releaseSemaphore()
         })
         release();
@@ -174,7 +186,7 @@ export default class App extends React.Component {
 
 
     render() {
-        const { nums, tree, visited, goalIdx, lines, BST_ACTIVE, ANIMATION_DELAY, 
+        const { path, nums, tree, visited, goalIdx, lines, BST_ACTIVE, ANIMATION_DELAY, 
                 TREE_HEIGHT } = this.state;
         let from = 0;
 
