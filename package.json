@@ -2,6 +2,7 @@
   "name": "searchvisualiser",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://elisabethjoan.github.io/search-visualiser",
   "dependencies": {
     "async-mutex": "^0.4.0",
     "react": "^18.1.0",
