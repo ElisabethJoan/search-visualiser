@@ -1,6 +1,9 @@
 import React from "react";
 import LineTo from "react-lineto";
-import { Slider, Checkbox } from 'rsuite';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from "@mui/material/Checkbox";
+import Slider from "@mui/material/Slider";
 import { Mutex, Semaphore } from 'async-mutex';
 
 import {
@@ -11,7 +14,6 @@ import BalancedBinaryTree from "./binarytree";
 import Layer from "./layer";
 import Node from "./node";
 
-import "rsuite/dist/rsuite.min.css";
 import "./app.css";
 
 let lock = new Mutex();
@@ -53,6 +55,7 @@ export default class App extends React.Component {
             }
             nums = Array.from(nums);
             goalIdx = Math.floor(Math.random() * 12) + 3;
+            this.setState({ BST_ACTIVE: false })
         }
 
         let tree = new BalancedBinaryTree(nums);
@@ -262,19 +265,42 @@ export default class App extends React.Component {
                     </ul>
                     <ul>
                         <li><h5>Settings</h5></li>
-                        <li><Checkbox onChange={() => this.begin(true, nums)}> Binary Search Tree </Checkbox></li>
+                        <li>
+                          <FormGroup>
+                            <FormControlLabel 
+                              control={<Checkbox
+                                onChange={() => {
+                                  if (BST_ACTIVE) {
+                                    this.begin(false, nums)
+                                    this.setState({ BST_ACTIVE: false })
+                                  } else {
+                                    this.begin(true, nums)
+                                  }}} />
+                              }
+                              label="Binary Search Tree" />
+                          </FormGroup>
+
+                        </li>
                         <li>Animation Delay</li>
-                        <li><Slider defaultValue={ANIMATION_DELAY} min={50} step={50}
-                            max={300} graduated progress value={ANIMATION_DELAY}
-                            onChange={value => {
-                                this.setState({ ANIMATION_DELAY: value });
+                        <li>
+                          <Slider 
+                            min={50}
+                            step={50}
+                            max={300} 
+                            value={ANIMATION_DELAY}
+                            onChange={(_, value) => {
+                              this.setState({ ANIMATION_DELAY: value });
                             }} />
                         </li>
                         <li>Tree Height</li>
-                        <li><Slider defaultValue={TREE_HEIGHT} min={3} step={1}
-                            max={6} graduated progress value={TREE_HEIGHT} 
-                            onChange={value => {
-                                this.setState({ TREE_HEIGHT: value })
+                        <li>
+                          <Slider 
+                            min={3}
+                            step={1}
+                            max={6}
+                            value={TREE_HEIGHT} 
+                            onChange={(_, value) => {
+                              this.setState({ TREE_HEIGHT: value })
                             }} />
                         </li>
                     </ul>
