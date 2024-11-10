@@ -1,10 +1,9 @@
 import React from "react";
 import LineTo from "react-lineto";
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from "@mui/material/Checkbox";
-import Slider from "@mui/material/Slider";
+import { Button, Checkbox, FormGroup, FormControlLabel, Slider } from '@mui/material';
 import { Mutex, Semaphore } from 'async-mutex';
+
+import { HomeRow, SketchWrapper } from "@elisabethjoan/portfolio-scaffold";
 
 import {
     dfs, bfs, binarySearch, preOrderTraversal, inOrderTraversal, postOrderTraversal,
@@ -83,13 +82,13 @@ export default class App extends React.Component {
         window.removeEventListener('resize', this.updateDimensions);
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(_, prevState) {
         if (this.state.tree[0] !== prevState.tree[0]) {
             let i = 0;
             let second = false;
             let lines = [];
     
-            [...Array(Math.pow(2, this.state.TREE_HEIGHT) - 2)].forEach((x, idx) => {
+            [...Array(Math.pow(2, this.state.TREE_HEIGHT) - 2)].forEach(() => {
                 lines.push({from: `${i}`, to: `${i * 2 + (1 + second)}`});
                 if (!second) {
                     second = true;
@@ -99,7 +98,7 @@ export default class App extends React.Component {
                 }
             });
     
-            this.setState({ lines: lines })
+            this.setState({ lines: lines });
         }
 
         if (this.state.TREE_HEIGHT !== prevState.TREE_HEIGHT) {
@@ -147,6 +146,7 @@ export default class App extends React.Component {
     }
     
     async displayPath(promise) {
+        this.forceUpdate();
         let release = await lock.acquire();
         let visited = new Set();
         await this.clearPath();
@@ -170,15 +170,15 @@ export default class App extends React.Component {
                 }
             }
             this.setState({ path: path, visited: Array.from(visited) })
-            await releaseSemaphore()
         })
+        releaseSemaphore()
         release();
     }
 
     setStateOfParent = (goalIdx) => {
         let array = this.state.tree;
 
-        array.forEach((node, idx) => {
+        array.forEach((node) => {
             node.isGoal = false;
         });
 
@@ -189,124 +189,15 @@ export default class App extends React.Component {
 
 
     render() {
-        const { path, nums, tree, visited, goalIdx, lines, BST_ACTIVE, ANIMATION_DELAY, 
+        const { nums, tree, visited, goalIdx, lines, BST_ACTIVE, ANIMATION_DELAY, 
                 TREE_HEIGHT } = this.state;
         let from = 0;
 
         return (
-            <div className="warpper">
-                <div className="interface">
-                    <ul>
-                        <li>
-                            <h5>Search</h5>
-                        </li>
-                        <li>
-                            <button onClick={() => this.displayPath(dfs(tree[0]))}>
-                                Depth-first Search
-                            </button>
-                        </li>
-                        <li>
-                            <button onClick={() => this.displayPath(bfs(tree[0]))}>
-                                Breadth-first Search
-                            </button>
-                        </li>
-                        <li>
-                            <button 
-                                disabled={!BST_ACTIVE} 
-                                onClick={() => this.displayPath(binarySearch(tree, tree[goalIdx]))}>
-                                    Binary Search
-                            </button>
-                        </li>
-                    </ul>
-                    <ul>
-                        <li>
-                            <h5>Traversals</h5>
-                        </li>
-                        <li>
-                            <button onClick={() => this.displayPath(preOrderTraversal(tree[0]))}>
-                                Pre-order
-                            </button>
-                        </li>
-                        <li>
-                            <button onClick={() => this.displayPath(inOrderTraversal(tree[0]))}>
-                                In-order
-                            </button>
-                        </li>
-                        <li>
-                            <button onClick={() => this.displayPath(postOrderTraversal(tree[0]))}>
-                                Post-order
-                            </button>
-                        </li>
-                        <li>
-                            <button onClick={() => this.displayPath(levelOrderTraversal(tree[0], TREE_HEIGHT))}>
-                                Level-order
-                            </button>
-                        </li>
-                    </ul>
-                    <ul>
-                        <li>
-                            <h5>Challenge Traversals</h5>
-                        </li>
-                        <li>
-                            <button onClick={() => this.displayPath(verticalOrderTraversal(tree[0]))}>
-                                Vertical-order
-                            </button>
-                        </li>
-                        <li>
-                            <button onClick={() => this.displayPath(reverseLOT(tree[0], TREE_HEIGHT))}>
-                                Reverse Level-order
-                            </button>
-                        </li>
-                        <li>
-                            <button onClick={() => this.displayPath(zigZagLOT(tree[0], TREE_HEIGHT))}>
-                                ZigZag Level-order
-                            </button>
-                        </li>
-                    </ul>
-                    <ul>
-                        <li><h5>Settings</h5></li>
-                        <li>
-                          <FormGroup>
-                            <FormControlLabel 
-                              control={<Checkbox
-                                onChange={() => {
-                                  if (BST_ACTIVE) {
-                                    this.begin(false, nums)
-                                    this.setState({ BST_ACTIVE: false })
-                                  } else {
-                                    this.begin(true, nums)
-                                  }}} />
-                              }
-                              label="Binary Search Tree" />
-                          </FormGroup>
-
-                        </li>
-                        <li>Animation Delay</li>
-                        <li>
-                          <Slider 
-                            min={50}
-                            step={50}
-                            max={300} 
-                            value={ANIMATION_DELAY}
-                            onChange={(_, value) => {
-                              this.setState({ ANIMATION_DELAY: value });
-                            }} />
-                        </li>
-                        <li>Tree Height</li>
-                        <li>
-                          <Slider 
-                            min={3}
-                            step={1}
-                            max={6}
-                            value={TREE_HEIGHT} 
-                            onChange={(_, value) => {
-                              this.setState({ TREE_HEIGHT: value })
-                            }} />
-                        </li>
-                    </ul>
-                </div>
+            <div className="wrapper">
+                <HomeRow extension=".jsx" />
                 <div>
-                    {[...Array(TREE_HEIGHT)].map((_, idx) => {
+                    {[...Array(6)].map((_, idx) => {
                         let to = from * 2 + 1;
                         return (
                             <Layer key={idx} className={idx}>
@@ -336,12 +227,10 @@ export default class App extends React.Component {
                                 from={line.from}
                                 to={line.to}
                                 borderColor="grey"
+                                zIndex={0}
                             />
                         );
                     })}
-                </div>
-                <br/><br/>
-                <div className="traversalPath">
                     <h4>Traversal Path</h4>
                     <Layer className="traversal">
                         {visited.map((node, idx) => {
@@ -354,6 +243,139 @@ export default class App extends React.Component {
                             );
                         })}
                     </Layer>
+                </div>
+                <div className="interface">
+                    <ul>
+                        <li>
+                            <h5>Search</h5>
+                        </li>
+                        <li>
+                            <Button 
+                                variant="outlined"    
+                                onClick={() => this.displayPath(dfs(tree[0]))}
+                            >
+                                Depth-first Search
+                            </Button>
+                        </li>
+                        <li>
+                            <Button 
+                                variant="outlined"    
+                                onClick={() => this.displayPath(bfs(tree[0]))}
+                            >
+                                Breadth-first Search
+                            </Button>
+                        </li>
+                        <li>
+                            <Button 
+                                variant="outlined"    
+                                disabled={!BST_ACTIVE} 
+                                onClick={() => this.displayPath(binarySearch(tree, tree[goalIdx]))}
+                            >
+                                    Binary Search
+                            </Button>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            <h5>Traversals</h5>
+                        </li>
+                        <li>
+                            <Button 
+                                variant="outlined"    
+                                onClick={() => this.displayPath(preOrderTraversal(tree[0]))}
+                            >
+                                Pre-order
+                            </Button>
+                        </li>
+                        <li>
+                            <Button 
+                                variant="outlined"    
+                                onClick={() => this.displayPath(inOrderTraversal(tree[0]))}
+                            >
+                                In-order
+                            </Button>
+                        </li>
+                        <li>
+                            <Button 
+                                variant="outlined"    
+                                onClick={() => this.displayPath(postOrderTraversal(tree[0]))}>
+                                Post-order
+                            </Button>
+                        </li>
+                        <li>
+                            <Button 
+                                variant="outlined"    
+                                onClick={() => this.displayPath(levelOrderTraversal(tree[0], TREE_HEIGHT))}>
+                                Level-order
+                            </Button>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            <h5>Challenge Traversals</h5>
+                        </li>
+                        <li>
+                            <Button 
+                                variant="outlined"    
+                                onClick={() => this.displayPath(verticalOrderTraversal(tree[0]))}>
+                                Vertical-order
+                            </Button>
+                        </li>
+                        <li>
+                            <Button 
+                                variant="outlined"
+                                onClick={() => this.displayPath(reverseLOT(tree[0], TREE_HEIGHT))}>
+                                Reverse Level-order
+                            </Button>
+                        </li>
+                        <li>
+                            <Button 
+                                variant="outlined"
+                                onClick={() => this.displayPath(zigZagLOT(tree[0], TREE_HEIGHT))}>
+                                ZigZag Level-order
+                            </Button>
+                        </li>
+                    </ul>
+                    <ul className="settings">
+                        <li><h5>Settings</h5></li>
+                        <li>Animation Delay</li>
+                        <li>
+                          <Slider 
+                            min={50}
+                            step={50}
+                            max={300} 
+                            value={ANIMATION_DELAY}
+                            onChange={(_, value) => {
+                              this.setState({ ANIMATION_DELAY: value });
+                            }} />
+                        </li>
+                        <li>Tree Height</li>
+                        <li>
+                          <Slider 
+                            min={3}
+                            step={1}
+                            max={6}
+                            value={TREE_HEIGHT} 
+                            onChange={(_, value) => {
+                              this.setState({ TREE_HEIGHT: value })
+                            }} />
+                        </li>
+                        <li>
+                          <FormGroup>
+                            <FormControlLabel 
+                              control={<Checkbox
+                                onChange={() => {
+                                  if (BST_ACTIVE) {
+                                    this.begin(false, nums)
+                                    this.setState({ BST_ACTIVE: false })
+                                  } else {
+                                    this.begin(true, nums)
+                                  }}} />
+                              }
+                              label="Binary Search Tree" />
+                          </FormGroup>
+                        </li>
+                    </ul>
                 </div>
             </div>
         );

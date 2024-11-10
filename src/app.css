@@ -1,12 +1,19 @@
-.interface {
-    width: 80%;
+.wrapper {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    height: 100vh;
+    grid-template-rows: auto 1fr auto;
+}
+
+.interface {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    justify-self: center;
     text-align: center;
 }
 
 .interface ul {
     list-style-type: none;
+    padding: 0;
 }
 
 .interface li {
@@ -15,4 +22,8 @@
 
 .interface button {
     width: 150px;
+}
+
+.settings {
+    margin: 0 40px;
 }

@@ -1,22 +1,11 @@
 .layer {
-    height: 100px;
-    width: 98vw;
+    height: 50px;
     display: grid;
     grid-auto-flow: column;
-    z-index: 1;  
-}
-
-.layer4 .myNode {
-    font: 1.2vw Arial, sans-serif;
-}
-
-.layer5 .myNode {
-    font: 1vw Arial, sans-serif;
+    z-index: 1;
 }
 
 .layertraversal {
-    justify-content: center;
-    height: fit-content;
-    grid-auto-flow: row;
-    grid-template-columns: repeat(24, 4vw);
+    grid-template-columns: repeat(auto-fill, minmax(2.3vw, max-content));
+    grid-auto-flow: unset;
 }
