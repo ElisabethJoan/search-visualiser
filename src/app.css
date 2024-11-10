@@ -27,3 +27,16 @@
 .settings {
     margin: 0 40px;
 }
+
+.graph {
+    align-self: center;
+}
+
+.pathdisplay {
+    align-content: center;
+}
+
+.sketch {
+    display: grid;
+    grid-template-rows: 1fr auto;
+}

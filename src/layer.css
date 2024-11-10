@@ -6,6 +6,8 @@
 }
 
 .layertraversal {
+    height: 100px;
     grid-template-columns: repeat(auto-fill, minmax(2.3vw, max-content));
     grid-auto-flow: unset;
+    justify-content: center;
 }

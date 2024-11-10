@@ -29,7 +29,7 @@ export default class App extends React.Component {
             nums: [],
             tree: [],
             visited: [],
-            goalIdx: 0,
+    goalIdx: 0,
             lines: [],
             BST_ACTIVE: false,
             ANIMATION_DELAY: 200,
@@ -196,53 +196,57 @@ export default class App extends React.Component {
         return (
             <div className="wrapper">
                 <HomeRow extension=".jsx" />
-                <div>
-                    {[...Array(6)].map((_, idx) => {
-                        let to = from * 2 + 1;
-                        return (
-                            <Layer key={idx} className={idx}>
-                                {tree.slice(from, to).map((node, innerIdx) => {
-                                    if (innerIdx === from) {
-                                        from = to;
-                                    }
-                                    return (
-                                        <Node
-                                            key={node.idx}
-                                            value={node.value}
-                                            isGoal={node.isGoal}
-                                            isPath={node.isPath}
-                                            isActive={node.isActive}
-                                            className={node.idx}
-                                            setStateOfParent={this.setStateOfParent}
-                                        />
-                                    );
-                                })}
-                            </Layer>
-                        );
-                    })}
-                    {lines.map((line, idx) => {
-                        return (
-                            <LineTo 
-                                key={idx}
-                                from={line.from}
-                                to={line.to}
-                                borderColor="grey"
-                                zIndex={0}
-                            />
-                        );
-                    })}
-                    <h4>Traversal Path</h4>
-                    <Layer className="traversal">
-                        {visited.map((node, idx) => {
+                <div className="sketch">
+                    <div className="graph">
+                        {[...Array(6)].map((_, idx) => {
+                            let to = from * 2 + 1;
                             return (
-                                <Node
+                                <Layer key={idx} className={idx}>
+                                    {tree.slice(from, to).map((node, innerIdx) => {
+                                        if (innerIdx === from) {
+                                            from = to;
+                                        }
+                                        return (
+                                            <Node
+                                                key={node.idx}
+                                                value={node.value}
+                                                isGoal={node.isGoal}
+                                                isPath={node.isPath}
+                                                isActive={node.isActive}
+                                                className={node.idx}
+                                                setStateOfParent={this.setStateOfParent}
+                                            />
+                                        );
+                                    })}
+                                </Layer>
+                            );
+                        })}
+                        {lines.map((line, idx) => {
+                            return (
+                                <LineTo 
                                     key={idx}
-                                    value={node.value}
-                                    isActive={true}
+                                    from={line.from}
+                                    to={line.to}
+                                    borderColor="grey"
+                                    zIndex={0}
                                 />
                             );
                         })}
-                    </Layer>
+                    </div>
+                    <div className="pathdisplay">
+                        <h4>Traversal Path</h4>
+                        <Layer className="traversal">
+                            {visited.map((node, idx) => {
+                                return (
+                                    <Node
+                                        key={idx}
+                                        value={node.value}
+                                        isActive={true}
+                                    />
+                                );
+                            })}
+                        </Layer>
+                    </div>
                 </div>
                 <div className="interface">
                     <ul>

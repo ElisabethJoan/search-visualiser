@@ -1,7 +1,7 @@
 .myNode {
     border-radius: 50%;
-    width: 1.2vw;
-    height: 1.2vw;
+    width: 1.3vw;
+    height: 1.3vw;
     padding: 2px;
     background-color: var(--background-colour);
 
@@ -12,6 +12,7 @@
 
     align-self: center;
     justify-self: center;
+    align-content: center;
 
     z-index: 2;
     cursor: pointer;
