@@ -369,7 +369,7 @@ export default class App extends React.Component {
                           <FormGroup>
                             <FormControlLabel
                               control={<Checkbox
-                                style={{ color: "white" }}
+                                style={{ color: "#1976d2" }}
                                 onChange={() => {
                                   if (BST_ACTIVE) {
                                     this.begin(false, nums)
