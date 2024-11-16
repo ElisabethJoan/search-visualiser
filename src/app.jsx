@@ -128,8 +128,6 @@ export default class App extends React.Component {
         }
     }
 
-
-
     async flipActive(node) {
         node.isActive = !node.isActive;
         this.forceUpdate();

@@ -107,7 +107,7 @@ async function binarySearch(tree, goal) {
         })
     })
 
-    return [nodes];
+    return [Array.from(nodes), nodes.reverse()];
 }
 
 // --------------- TRAVERSALS ---------------
