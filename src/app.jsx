@@ -3,7 +3,7 @@ import LineTo from "react-lineto";
 import { Button, Checkbox, FormGroup, FormControlLabel, Slider } from '@mui/material';
 import { Mutex, Semaphore } from 'async-mutex';
 
-import { HomeRow, SketchWrapper } from "@elisabethjoan/portfolio-scaffold";
+import { HomeRow } from "@elisabethjoan/portfolio-scaffold";
 
 import {
     dfs, bfs, binarySearch, preOrderTraversal, inOrderTraversal, postOrderTraversal,
@@ -48,12 +48,13 @@ export default class App extends React.Component {
 
             this.setState({ BST_ACTIVE: true })
         } else {
+            const numCount = Math.pow(2, (this.state.TREE_HEIGHT + 1) - 1)
             nums = new Set();
-            while (nums.size !== 15) {
+            while (nums.size !== numCount) {
                 nums.add(Math.floor(Math.random() * 99) + 1);
             }
             nums = Array.from(nums);
-            goalIdx = Math.floor(Math.random() * 12) + 3;
+            goalIdx = Math.floor(Math.random() * (numCount - 3)) + 3;
             this.setState({ BST_ACTIVE: false })
         }
 
@@ -366,8 +367,9 @@ export default class App extends React.Component {
                         </li>
                         <li>
                           <FormGroup>
-                            <FormControlLabel 
+                            <FormControlLabel
                               control={<Checkbox
+                                style={{ color: "white" }}
                                 onChange={() => {
                                   if (BST_ACTIVE) {
                                     this.begin(false, nums)
